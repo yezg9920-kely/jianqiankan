@@ -28,6 +28,7 @@ jobs:
       - name: Verify workbench in an independent local directory
         if: ${{ success() || steps.skill.outcome == 'failure' }}
         id: workbench
+        timeout-minutes: 5
         working-directory: JianQianKan-Workbench
         run: |
           npm ci --no-audit --no-fund
@@ -37,5 +38,6 @@ jobs:
           npm run test:release
       - name: Verify the downloadable ZIP
         if: ${{ !cancelled() && steps.workbench.outcome == 'success' }}
+        timeout-minutes: 5
         working-directory: JianQianKan-Workbench
-        run: node tools/verify-hair-workbench.mjs ../downloads/JianQianKan-Workbench-macOS-Windows-v1.1.0.zip --no-browser
+        run: node tools/verify-hair-workbench.mjs ../downloads/JianQianKan-Workbench-macOS-Windows-v1.1.1.zip --no-browser

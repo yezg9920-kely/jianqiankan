@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
-import {spawn,execFileSync} from 'node:child_process';
+import {spawn,execFile,execFileSync} from 'node:child_process';
+import {once} from 'node:events';
+import {promisify} from 'node:util';
 import {createHash} from 'node:crypto';
 import {constants} from 'node:fs';
 import * as fs from 'node:fs/promises';
 import net from 'node:net';
 import path from 'node:path';
 import os from 'node:os';
-import {createRequire} from 'node:module';
 
 const args=process.argv.slice(2);
 const dirArg=args.indexOf('--directory');
@@ -105,8 +106,10 @@ try {
 
   // Non-portrait fixture: exercises decoder, case permissions, filesystem,
   // and available local photo-analysis adapter without private images.
-  const sharp=createRequire(path.join(root,'package.json'))('sharp');
-  const bytes=await sharp({create:{width:256,height:256,channels:3,background:'#889980'}}).png().toBuffer();
+  // Keep Sharp's Windows DLLs out of this process so the temporary install can be removed.
+  const fixture="require('sharp')({create:{width:256,height:256,channels:3,background:'#889980'}})"
+    +".png().toBuffer().then(bytes=>process.stdout.write(bytes));";
+  const bytes=execFileSync(process.execPath,['-e',fixture],{cwd:root,timeout:10_000,windowsHide:true});
   const create=await fetch(origin+'/api/cases',{method:'POST',headers:local,body:JSON.stringify({
     title:'离线测试 · 无人像',authorized:true,photo:bytes.toString('base64')
   })});
@@ -152,14 +155,29 @@ try {
     revisionAndSelectionPersisted:true,cloudGenerationCalls:0,sourceServerHealthy:current?.ok??null},null,2));
 } finally {
   await browser?.close();
-  if(server?.pid && server.exitCode===null && server.signalCode===null){
-    const done=new Promise(resolve=>server.once('exit',resolve));
-    if(win) {
-      // The Windows batch/native Node pair lives under this test's own CMD PID.
-      try{execFileSync('taskkill.exe',['/PID',String(server.pid),'/T','/F'],{stdio:'ignore'});}
-      catch{server.kill('SIGTERM');}
-    } else server.kill('SIGTERM');
-    await done;
+  if(server) {
+    try {
+      if(server.pid && server.exitCode===null && server.signalCode===null) {
+        const exit=once(server,'exit',{signal:AbortSignal.timeout(12_000)});
+        if(win) {
+          // The Windows batch/native Node pair lives under this test's own CMD PID.
+          try {
+            await promisify(execFile)('taskkill.exe',['/PID',String(server.pid),'/T','/F'],{
+              timeout:5_000,windowsHide:true,
+            });
+          } catch {
+            server.kill('SIGTERM');
+          }
+        } else server.kill('SIGTERM');
+        await exit;
+      }
+    } finally {
+      // A descendant can inherit the stdout/stderr pipes after its parent exits.
+      // They have served their purpose once the verification and termination finish.
+      server.stdout?.destroy();
+      server.stderr?.destroy();
+      server.unref();
+    }
   }
   await fs.rm(temp,{recursive:true,force:true,maxRetries:6,retryDelay:250});
 }
