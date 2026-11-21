@@ -25,8 +25,16 @@ try {
       const rel=path.relative(source,file);
       return !rel.split(path.sep).some(n=>['node_modules','private-workspace','.git','exports','dist','__pycache__'].includes(n)||n.startsWith('.env'));
     }});
+  } else if(win) {
+    // Windows tar.exe can lose non-ASCII path arguments under an English locale.
+    const powershell=path.join(process.env.SystemRoot || 'C:\\Windows','System32','WindowsPowerShell','v1.0','powershell.exe');
+    execFileSync(powershell,[
+      '-NoProfile','-NonInteractive','-Command',
+      "$ErrorActionPreference='Stop'; Add-Type -AssemblyName System.IO.Compression.FileSystem; "+
+      "[IO.Compression.ZipFile]::ExtractToDirectory($env:JQQ_VERIFY_ARCHIVE, $env:JQQ_VERIFY_DESTINATION)",
+    ],{env:{...process.env,JQQ_VERIFY_ARCHIVE:source,JQQ_VERIFY_DESTINATION:temp},timeout:30_000,windowsHide:true});
   } else if(process.platform==='darwin') execFileSync('/usr/bin/ditto',['-x','-k',source,temp]);
-  else execFileSync(win?'tar.exe':'unzip',win?['-xf',source,'-C',temp]:['-q',source,'-d',temp]);
+  else execFileSync('unzip',['-q',source,'-d',temp]);
   const macLauncher=path.join(root,'打开剪前看看工作台.command');
   const windowsLauncher='Start Workbench.cmd';
   await fs.access(path.join(root,windowsLauncher));
