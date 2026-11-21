@@ -32,3 +32,6 @@ jobs:
           npm run test:analysis
           npm run test:codex
           npm run test:release
+      - name: Verify the downloadable ZIP
+        working-directory: JianQianKan-Workbench
+        run: node tools/verify-hair-workbench.mjs ../downloads/JianQianKan-Workbench-macOS-Windows-v1.1.0.zip --no-browser
