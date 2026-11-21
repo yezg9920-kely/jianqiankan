@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "status": "not_observed",
+  "analysis_method": null,
+  "input_assets": [],
+  "label_status": "tentative_photo_impression",
+  "face_shape_impression": null,
+  "style_intent": null,
+  "style_intent_source": null,
+  "observations": [],
+  "design_goals": [],
+  "limitations": [],
+  "customer_confirmed": false
+}

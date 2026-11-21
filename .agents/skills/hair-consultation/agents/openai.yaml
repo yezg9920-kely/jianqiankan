@@ -1,0 +1,4 @@
+interface:
+  display_name: "剪前看看 · 发型咨询"
+  short_description: "根据授权照片做脸廓分析、发型发色试戴和形象报告，支持工作台回看与改款"
+  default_prompt: "使用 $hair-consultation 根据这些授权照片做个性化发型试戴与形象报告，保留原貌，按编号比较并支持继续改款。"

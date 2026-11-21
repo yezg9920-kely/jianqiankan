@@ -1,0 +1,490 @@
+{
+  "version": "2026-11-14-color-audit-v2",
+  "scope": "six visual color directions with two existing haircut bases; no platform rank",
+  "archived_notes_checked": [
+    "XHS26",
+    "XHS29",
+    "XHS31",
+    "XHS32",
+    "XHS33",
+    "XHS34"
+  ],
+  "new_live_search_query": "男生 发色 秋冬",
+  "new_live_search_notes": 20,
+  "new_live_full_notes": 1,
+  "new_live_search_calls": 1,
+  "new_live_detail_calls": 1,
+  "agentkey_credits_charged": 4,
+  "images_used_for_color_reading": "six existing local reference images viewed; new live detail used for text confirmation only",
+  "corrections": [
+    {
+      "catalog_id": "C01",
+      "removed_source": "XHS26",
+      "reason": "正文实际写榛果灰棕，不作为冷茶棕的同名证据",
+      "replacement_sources": [
+        "XHS31",
+        "XHS32"
+      ]
+    }
+  ],
+  "palette": [
+    {
+      "id": 1,
+      "catalog_id": "C01",
+      "name": "冷茶棕",
+      "spec": "LOW-to-MEDIUM value cool neutral tea BROWN. The dominant color must remain deep muted brown with olive/ash neutral highlights; visibly reduce the current reddish-orange warmth. Not pure black, silver, green or a global blue filter. Deep coffee shadows, fine subdued cool-brown highlight strands.",
+      "summary": "低明度冷棕，压低明显红橙反光。",
+      "source_ids": [
+        "XHS31",
+        "XHS32"
+      ],
+      "region": "XHS31九格图中排左侧明确标“冷茶棕”",
+      "hex": "#55483d",
+      "care": "染发视觉参考；实际提浅方式按底色确认。",
+      "level": "自然深色"
+    },
+    {
+      "id": 2,
+      "catalog_id": "C05",
+      "name": "巧克力棕",
+      "spec": "DEEP neutral-warm CHOCOLATE BROWN. Rich dark cocoa base with visible warm milk-chocolate/cacao glints on lit strands. Clearly warmer and more cocoa-brown than the cool-tea sample, but NOT chestnut copper, red, pure black or golden blonde. Maintain dimensional darker roots and strand shadows.",
+      "summary": "深可可棕，带克制的暖棕光泽。",
+      "source_ids": [
+        "XHS34",
+        "XHS31"
+      ],
+      "region": "XHS34第1张巧克力棕自拍，XHS31右上摩卡棕作辅助",
+      "hex": "#604432",
+      "care": "染发视觉参考；深浅与持色以现场确认为准。",
+      "level": "自然深色"
+    },
+    {
+      "id": 3,
+      "catalog_id": "C06",
+      "name": "栗棕",
+      "spec": "MEDIUM value WARM CHESTNUT BROWN. Clearly visible gentle copper-red and reddish caramel reflections throughout brown hair, lighter and warmer than dark chocolate. Natural chestnut-brown body, not vivid orange, not fire red, not blonde. Preserve shadows, texture, roots and plausible strand variation.",
+      "summary": "中等暖栗棕，红铜反光更明显。",
+      "source_ids": [
+        "XHS29",
+        "XHS31"
+      ],
+      "region": "XHS29第1张为染后约一个月栗棕，不当作刚染完色卡",
+      "hex": "#95633f",
+      "care": "暖调变化较明显；掉色与后续维护待确认。",
+      "level": "温暖棕色"
+    },
+    {
+      "id": 4,
+      "catalog_id": "C02",
+      "name": "榛果灰棕",
+      "spec": "MEDIUM value HAZELNUT ASH BROWN with muted gray-beige taupe highlights. Noticeably cooler, smokier and more desaturated than chestnut/chocolate, visibly lighter than deep cool tea. Brown remains the body color, with mushroom/taupe ash in the light. Do not make it silver, white, flat gray paint or blue. Keep natural darker strand shadows.",
+      "summary": "中等明度灰褐棕，冷灰米感更清楚。",
+      "source_ids": [
+        "XHS26",
+        "LIVE-HARDY"
+      ],
+      "region": "XHS26正文明确榛果灰棕；LIVE-HARDY完整正文再次核对该名称",
+      "hex": "#8b8070",
+      "care": "灰感与明度受原底色影响，需确认维护方式。",
+      "level": "冷灰棕色"
+    },
+    {
+      "id": 5,
+      "catalog_id": "C07",
+      "name": "奶茶棕",
+      "spec": "LIGHT-to-MEDIUM value MILK TEA BEIGE BROWN, clearly lighter than all deep brown and chestnut variants. Soft low-saturation latte/caramel beige with muted beige-gold on highlight strands, balanced taupe-brown shadows and slightly deeper natural roots. Warm-neutral creamy light brown, not orange, yellow blonde, platinum or gray. Hair color only: skin and backdrop must not become brighter.",
+      "summary": "明度更高的米褐奶茶色，变化更醒目。",
+      "source_ids": [
+        "XHS31",
+        "XHS32"
+      ],
+      "region": "XHS31九格下排中间、XHS32首图上排第二格均明确标“奶茶棕”",
+      "hex": "#b29a7d",
+      "care": "较浅效果；是否需要提浅或漂发须现场确认。",
+      "level": "浅棕探索"
+    },
+    {
+      "id": 6,
+      "catalog_id": "C11",
+      "name": "黑加仑紫棕",
+      "spec": "DEEP GRAPE / BLACKCURRANT PURPLE-BROWN. A dark aubergine-brown base with distinctly visible muted berry-purple and plum reflections on lit strands, similar to low-saturation blackcurrant hair outdoors. Must visibly read as purple-brown rather than ordinary warm chestnut. Not neon purple, not pink, not burgundy red only. Retain deep brown/purple shadows and realistic fine strands. Purple affects scalp hair only, never skin, glasses, eyebrows, lips or background.",
+      "summary": "深褐底带莓紫反光，属于个性探索。",
+      "source_ids": [
+        "XHS33"
+      ],
+      "region": "XHS33第1张为紫色目标；第2张为染前，不作目标",
+      "hex": "#704153",
+      "care": "个性发色参考；原底色、褪色与维护待确认。",
+      "level": "个性探索"
+    }
+  ],
+  "sources": [
+    {
+      "id": "LIVE-HARDY",
+      "note_id": "6af572bf000000002b0066f4",
+      "title": "记录第一次染冷棕怎么样",
+      "author": "Hardy滴滴",
+      "date_text": "搜索结果显示2天前；本次已读取完整正文",
+      "detail_counts": [
+        "1123",
+        "82",
+        "58"
+      ],
+      "quality_note": "正文含染发膏及榛果灰棕标签；付费推广关系未知",
+      "images": [],
+      "url": "https://www.xiaohongshu.com/explore/6af572bf000000002b0066f4"
+    },
+    {
+      "id": "XHS26",
+      "note_id": "6ad745670000000030006d7b",
+      "title": "黄黑皮男生不要放过这个冷棕！",
+      "author": "狗熊岭的熊大",
+      "url": "https://www.xiaohongshu.com/explore/6ad745670000000030006d7b",
+      "date_text": "10-20 山东",
+      "search_likes": "462",
+      "detail_counts": [
+        "462",
+        "123",
+        "23"
+      ],
+      "query": "男生发色 2026 秋冬",
+      "group": "male-color",
+      "images": [
+        {
+          "index": 0,
+          "path": "images/26-6ad745670000000030006d7b-01.webp",
+          "sha256": "8e1d8af6f0f24b4e14c39167799c9a94a3889fcae2ed4e6c713366adbbeba88b",
+          "width": 1080,
+          "height": 1439,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        },
+        {
+          "index": 1,
+          "path": "images/26-6ad745670000000030006d7b-02.webp",
+          "sha256": "48d43a75e277ccc99dd1c7470603caaaae23964dae6032d3f5b49bbf0791c3dc",
+          "width": 1080,
+          "height": 1440,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        }
+      ],
+      "quality_note": "含染发产品推荐；不作为独立流行榜、疗效或免漂证明"
+    },
+    {
+      "id": "XHS29",
+      "note_id": "6ad5dd040000000027015651",
+      "title": "分享很有韩味的秋冬发色（栗棕）素人自测",
+      "author": "一片吐司",
+      "url": "https://www.xiaohongshu.com/explore/6ad5dd040000000027015651",
+      "date_text": "编辑于 10-19 上海",
+      "search_likes": "14",
+      "detail_counts": [
+        "14",
+        "5",
+        "7"
+      ],
+      "query": "女生发色 2026 秋冬",
+      "group": "female-color",
+      "images": [
+        {
+          "index": 0,
+          "path": "images/29-6ad5dd040000000027015651-01.webp",
+          "sha256": "a10619d089d39c58a8caa3a196961e42d26033e8b5f0cb484b5fa3977b91de35",
+          "width": 1080,
+          "height": 1440,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        },
+        {
+          "index": 1,
+          "path": "images/29-6ad5dd040000000027015651-02.webp",
+          "sha256": "b9a7ce3e3cfe9f6ab575f6582b7d3fd66ddbb49e4aa264b2cbfccf26dd02a42b",
+          "width": 1080,
+          "height": 1440,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        }
+      ],
+      "quality_note": "作者公开发布参考；修图、服务可行性与实际施工来源未独立核实"
+    },
+    {
+      "id": "XHS31",
+      "note_id": "6adf01d4000000000d03972f",
+      "title": "秋季发色极限九选一",
+      "author": "小艾",
+      "url": "https://www.xiaohongshu.com/explore/6adf01d4000000000d03972f",
+      "date_text": "10-26 河北",
+      "search_likes": "74",
+      "detail_counts": [
+        "74",
+        "39",
+        "1"
+      ],
+      "query": "女生发色 2026 秋冬",
+      "group": "female-color",
+      "images": [
+        {
+          "index": 0,
+          "path": "images/31-6adf01d4000000000d03972f-01.webp",
+          "sha256": "2a812a75a2c3d5bc2e794ceef59d07b155f7c25dc7d40bc0ce36ef22d3cf61bc",
+          "width": 1080,
+          "height": 1402,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        }
+      ],
+      "quality_note": "作者公开发布参考；修图、服务可行性与实际施工来源未独立核实"
+    },
+    {
+      "id": "XHS32",
+      "note_id": "6aeaa76d000000000f027c1a",
+      "title": "学生党闭眼冲的十二款免漂显白发色",
+      "author": "小红薯6AE430E7",
+      "url": "https://www.xiaohongshu.com/explore/6aeaa76d000000000f027c1a",
+      "date_text": "11-03 浙江",
+      "search_likes": "45",
+      "detail_counts": [
+        "45",
+        "25",
+        "评论"
+      ],
+      "query": "女生发色 2026 秋冬",
+      "group": "female-color",
+      "images": [
+        {
+          "index": 0,
+          "path": "images/32-6aeaa76d000000000f027c1a-01.webp",
+          "sha256": "22a2c94900b8b84c42e1e4b5cb57ebe0c8cfdbbf189252108dfa45887d509666",
+          "width": 1080,
+          "height": 1412,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        },
+        {
+          "index": 1,
+          "path": "images/32-6aeaa76d000000000f027c1a-02.webp",
+          "sha256": "0c41535580b2ade6eeb990f6b920e166af98a29acca1cebad5b08e8693722cd4",
+          "width": 1080,
+          "height": 1375,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        }
+      ],
+      "quality_note": "作者公开发布参考；修图、服务可行性与实际施工来源未独立核实"
+    },
+    {
+      "id": "XHS33",
+      "note_id": "6aed6d6f000000000803faae",
+      "title": "都说紫发很有韵味…",
+      "author": "甜柚三两三",
+      "url": "https://www.xiaohongshu.com/explore/6aed6d6f000000000803faae",
+      "date_text": "7天前 山东",
+      "search_likes": "121",
+      "detail_counts": [
+        "121",
+        "87",
+        "1"
+      ],
+      "query": "女生发色 2026 秋冬",
+      "group": "female-color",
+      "images": [
+        {
+          "index": 0,
+          "path": "images/33-6aed6d6f000000000803faae-01.webp",
+          "sha256": "cf86328d01a647dc1bf4df9b7f2d808255466a0f765bc32b3cbc6800e7727f4f",
+          "width": 1080,
+          "height": 1440,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        },
+        {
+          "index": 1,
+          "path": "images/33-6aed6d6f000000000803faae-02.webp",
+          "sha256": "dabdd4835d354b52acf15f821a13fd263c1bc15302bdfdbdb8a78b7f5bebdc54",
+          "width": 1080,
+          "height": 1440,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "作者标为染前；只作前后变化核对，不作为目标发色"
+        }
+      ],
+      "quality_note": "含染发产品推荐；不作为独立流行榜、疗效或免漂证明"
+    },
+    {
+      "id": "XHS34",
+      "note_id": "6ae549100000000025010e1c",
+      "title": "入秋新发色是巧克力棕•̀⩊•́",
+      "author": "念念",
+      "url": "https://www.xiaohongshu.com/explore/6ae549100000000025010e1c",
+      "date_text": "11-01 湖南",
+      "search_likes": "235",
+      "detail_counts": [
+        "234",
+        "122",
+        "10"
+      ],
+      "query": "女生发色 2026 秋冬",
+      "group": "female-color",
+      "images": [
+        {
+          "index": 0,
+          "path": "images/34-6ae549100000000025010e1c-01.webp",
+          "sha256": "d02c524000105a31a06fee2f10b924c4cc68a0e331d20ed138b45c410fb6bf92",
+          "width": 1080,
+          "height": 1440,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        },
+        {
+          "index": 1,
+          "path": "images/34-6ae549100000000025010e1c-02.webp",
+          "sha256": "4b7bbcfedf419728f25f00d500f21b2dac4e9c2fb92626e274e718b7c750796d",
+          "width": 1080,
+          "height": 1441,
+          "visual_review": "reviewed_in_contact_sheet_2026-11-14",
+          "role_note": "发型或颜色参考；未验证为实际理发施工成果"
+        }
+      ],
+      "quality_note": "含染发产品推荐；不作为独立流行榜、疗效或免漂证明"
+    }
+  ],
+  "customer_approval": "pending",
+  "stylist_feasibility": "unreviewed",
+  "previous_haircut_source_audit": [
+    {
+      "option": "01",
+      "name": "自然微分碎盖",
+      "catalog_id": "M01",
+      "source_ids": [
+        "XHS01",
+        "XHS04",
+        "XHS05"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "02",
+      "name": "四六帘式微分",
+      "catalog_id": "M03",
+      "source_ids": [
+        "XHS07",
+        "XHS10"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "03",
+      "name": "三七侧分",
+      "catalog_id": "M04",
+      "source_ids": [
+        "XHS02",
+        "XHS07",
+        "XHS10"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "04",
+      "name": "清爽短纹理",
+      "catalog_id": "M02",
+      "source_ids": [
+        "XHS01",
+        "XHS06"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "05",
+      "name": "法式短碎 Crop",
+      "catalog_id": "M05",
+      "source_ids": [
+        "XHS06",
+        "XHS10"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "06",
+      "name": "立体短前刺",
+      "catalog_id": "M06",
+      "source_ids": [
+        "XHS01",
+        "XHS02",
+        "XHS10"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "07",
+      "name": "自然短寸",
+      "catalog_id": "M08",
+      "source_ids": [
+        "XHS02",
+        "XHS10"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "08",
+      "name": "轻量短狼尾",
+      "catalog_id": "M07",
+      "source_ids": [
+        "XHS02",
+        "XHS04"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "09",
+      "name": "韩式逗号刘海",
+      "catalog_id": "M03-adapted",
+      "source_ids": [],
+      "scope": "助手基于M03再设计，未单独核实热门同款",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "10",
+      "name": "气垫感微分",
+      "catalog_id": "T01",
+      "source_ids": [
+        "XHS01",
+        "XHS08",
+        "XHS09"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "11",
+      "name": "莱斯利松卷",
+      "catalog_id": "T04",
+      "source_ids": [
+        "XHS02",
+        "XHS08",
+        "XHS09"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    },
+    {
+      "option": "12",
+      "name": "蓬松羊毛小卷",
+      "catalog_id": "T06",
+      "source_ids": [
+        "XHS07",
+        "XHS08",
+        "XHS09"
+      ],
+      "scope": "已有图鉴/笔记启发，当前图为本人适配预览",
+      "current_popularity_rank_verified": false
+    }
+  ]
+}

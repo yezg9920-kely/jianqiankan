@@ -1,0 +1,6 @@
+node_modules/
+dist/
+private-workspace/
+.env*
+*.local
+.DS_Store

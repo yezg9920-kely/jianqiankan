@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "case_id": null,
+  "stage": "awaiting_photo",
+  "created_at": null,
+  "authorization": {
+    "portrait_authorized": false,
+    "cloud_processing_approved": false,
+    "public_display_approved": false,
+    "source": null
+  },
+  "preferences": {
+    "style_direction": null,
+    "style_direction_source": null,
+    "baseline_portrait": true,
+    "baseline_background": "clean light neutral",
+    "beauty_level": "light_natural_baseline",
+    "number_of_options": 12,
+    "independent_images": true,
+    "length": "保留大体长度",
+    "keep": [],
+    "avoid": [],
+    "perm": false,
+    "dye": false,
+    "bleach": false,
+    "tie_up": null,
+    "daily_care": null,
+    "source": "conservative_defaults",
+    "photo_optimization": {
+      "mode": "natural_identity_preserving",
+      "applied_once_at": "baseline",
+      "customer_request_overrides": true
+    },
+    "presentation": {
+      "desktop_columns": 3,
+      "mobile_columns": 1,
+      "four_look_boards": true,
+      "retain_full_resolution_originals": true
+    }
+  },
+  "observations": [],
+  "unknowns": [],
+  "recommendation_round": 0,
+  "feedback_history": [],
+  "assets": [],
+  "options": [],
+  "runs": [],
+  "selection": {
+    "option_id": null,
+    "asset_id": null,
+    "customer_words": null,
+    "customer_confirmed": false
+  },
+  "feasibility": {
+    "status": "unreviewed",
+    "notes": []
+  },
+  "communication": {
+    "keep": [],
+    "avoid": [],
+    "fringe": null,
+    "sides": null,
+    "crown": null,
+    "ear_area": null,
+    "nape": null,
+    "care": null,
+    "services": [],
+    "price": null
+  },
+  "contour_profile": null,
+  "personalized_design": {
+    "status": "not_planned",
+    "profile_path": null,
+    "plan_path": null,
+    "compiled_path": null,
+    "visual_validation": "not_generated"
+  }
+}

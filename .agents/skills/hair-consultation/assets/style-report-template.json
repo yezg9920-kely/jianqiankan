@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "title": "个人形象设计报告",
+  "case_label": "",
+  "date": "",
+  "direction": "",
+  "assets": {},
+  "baseline_asset": "",
+  "observations": [
+    {
+      "feature": "",
+      "seen": "",
+      "design": ""
+    }
+  ],
+  "recommendation": {
+    "code": "",
+    "name": "",
+    "reason": ""
+  },
+  "tiers": [
+    {
+      "title": "优先试",
+      "looks": [
+        {
+          "code": "",
+          "name": "",
+          "asset": "",
+          "reason": "",
+          "care": ""
+        }
+      ]
+    },
+    {
+      "title": "可尝试",
+      "looks": []
+    },
+    {
+      "title": "本次放后",
+      "looks": []
+    }
+  ],
+  "angles": [
+    {
+      "asset": "",
+      "label": ""
+    }
+  ],
+  "angles_note": "",
+  "hair_colors": [
+    {
+      "code": "",
+      "name": "",
+      "asset": "",
+      "hex": "",
+      "reason": ""
+    }
+  ],
+  "hair_colors_note": "",
+  "garment_colors": [
+    {
+      "code": "",
+      "name": "",
+      "asset": "",
+      "hex": "",
+      "reason": ""
+    }
+  ],
+  "garment_colors_note": "",
+  "stylist_guide": [
+    {
+      "part": "",
+      "instruction": ""
+    }
+  ],
+  "limitations": ""
+}
