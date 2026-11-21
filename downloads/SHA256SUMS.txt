@@ -1,3 +1,3 @@
-2566efb49f20c87a015c72b4ebf47494fdbe33286bd9e49639cc4bbca2785d8e  hair-consultation-Skill-v2.1.0.zip
+4d0217e4144dd6388f3193ce8fbb7226709743c0a6e682a0637098c9c912ee09  hair-consultation-Skill-v2.1.1.zip
 62b19f487b7697051a05626c58f531bb988cfa7e0b794787f230866b8811de85  JianQianKan-Workbench-macOS-Windows-v1.1.0.zip
-ee9c564838c03b3422e9aa9fe3dc1912a5fa9cdaff867aa0be2d0887da4296cf  JianQianKan-Skill-and-Workbench-v2.1.0.zip
+53040e874213dada9a8527707065262b3988256feb8f642a41fcc5db6bb5152e  JianQianKan-Skill-and-Workbench-v2.1.1.zip

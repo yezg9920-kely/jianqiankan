@@ -4,6 +4,7 @@ import argparse
 import os
 from pathlib import Path
 import shutil
+import sys
 import tempfile
 from datetime import datetime, timezone
 
@@ -50,6 +51,8 @@ def default_dir():
     return portable
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--skills-dir", type=Path, default=default_dir())
     args = ap.parse_args()

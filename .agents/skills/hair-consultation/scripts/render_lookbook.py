@@ -13,6 +13,7 @@ import json
 import math
 import os
 import shutil
+import sys
 
 def default_font():
     custom = os.getenv("JQQ_CJK_FONT")
@@ -135,11 +136,11 @@ def main():
     source, out = args.source.resolve(), args.output.resolve()
     if source == out:
         raise ValueError('Use a new output directory; preserve the previous delivery.')
-    looks = json.loads((source/'look-plan.json').read_text())
+    looks = json.loads((source/'look-plan.json').read_text(encoding='utf-8'))
     if not looks or len({i['id'] for i in looks}) != len(looks):
         raise ValueError('Require distinct option IDs.')
     copy_path = source/'presentation-plan.json'
-    copy = json.loads(copy_path.read_text()) if copy_path.exists() else {}
+    copy = json.loads(copy_path.read_text(encoding='utf-8')) if copy_path.exists() else {}
     crop = copy.get('display_crop_normalized', [.065, .07, .935, .88])
     if len(crop) != 4 or not all(isinstance(v, (int,float)) and 0 <= v <= 1 for v in crop) or not (crop[0] < crop[2] and crop[1] < crop[3]):
         raise ValueError('display_crop_normalized must define a rectangle within [0,1].')
@@ -210,7 +211,7 @@ def main():
     if (out/'发色来源与推荐依据.md').exists():
         board_links += '<a href="发色来源与推荐依据.md" target="_blank" rel="noopener">查看发色来源与推荐依据 ↗</a>'
     data = [{k:v for k,v in i.items() if k in ('id','name','preview','image_path','care_note','display_summary','comparison_preview','comparison_label')} for i in looks]
-    template = (Path(__file__).resolve().parent.parent/'assets/lookbook-template.html').read_text()
+    template = (Path(__file__).resolve().parent.parent/'assets/lookbook-template.html').read_text(encoding='utf-8')
     recommended = [i for i in looks if i.get('recommended')][:3]
     recommendation_copy = '可以先比较 '+ '、'.join(f'<a href="#look-{esc(i["id"])}" data-jump="{esc(i["id"])}">{esc(i["id"])} {esc(i["name"])}</a>' for i in recommended)+'。' if recommended else '先选几款喜欢的方向，再一起细调。'
     replacements = {'__CARDS__': ''.join(cards), '__BOARDS__': board_links, '__COUNT__': str(len(looks)), '__RECOMMENDATIONS__': recommendation_copy, '__DATA__': json.dumps(data, ensure_ascii=False).replace('<', '\\u003c')}
@@ -220,12 +221,14 @@ def main():
         replacements['__'+key.upper()+'__'] = esc(copy.get(key,default))
     for key, value in replacements.items():
         template = template.replace(key, value)
-    (out/'发型方案图册.html').write_text(template)
-    (out/'look-plan.json').write_text(json.dumps(looks, ensure_ascii=False, indent=2))
+    (out/'发型方案图册.html').write_text(template, encoding='utf-8')
+    (out/'look-plan.json').write_text(json.dumps(looks, ensure_ascii=False, indent=2), encoding='utf-8')
     provenance = {'source_batch': str(source), 'new_image_generation_calls': 0, 'original_outputs_unchanged': all(digest(out/h['file']) == h['source_sha256'] for h in hashes), 'originals': hashes, 'presentation_only': True, 'display_crop_normalized': crop, 'baseline_display_crop_pixels': baseline_box, 'preview_size': [800,1000], 'boards': boards, 'customer_identity_acceptance': 'pending', 'stylist_feasibility': 'unreviewed'}
-    (out/'evidence/presentation-provenance.json').write_text(json.dumps(provenance, ensure_ascii=False, indent=2))
+    (out/'evidence/presentation-provenance.json').write_text(json.dumps(provenance, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps({'gallery': str(out/'发型方案图册.html'), 'looks': len(looks), 'boards': boards, 'original_outputs_unchanged': provenance['original_outputs_unchanged']}, ensure_ascii=False))
 
 
 if __name__ == '__main__':
+    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
     main()

@@ -6,8 +6,8 @@
 
 | 下载 | 适合怎么用 |
 | --- | --- |
-| [整套 ZIP](downloads/JianQianKan-Skill-and-Workbench-v2.1.0.zip?raw=true) | 同时安装 Codex Skill 和使用电脑工作台 |
-| [仅 Skill](downloads/hair-consultation-Skill-v2.1.0.zip?raw=true) | 在 Codex 对话里完成发型分析、试戴图册和详细报告 |
+| [整套 ZIP](downloads/JianQianKan-Skill-and-Workbench-v2.1.1.zip?raw=true) | 同时安装 Codex Skill 和使用电脑工作台 |
+| [仅 Skill](downloads/hair-consultation-Skill-v2.1.1.zip?raw=true) | 在 Codex 对话里完成发型分析、试戴图册和详细报告 |
 | [仅工作台](downloads/JianQianKan-Workbench-macOS-Windows-v1.1.0.zip?raw=true) | 在浏览器上传、生成和管理案例 |
 
 [下载文件的 SHA-256](downloads/SHA256SUMS.txt)

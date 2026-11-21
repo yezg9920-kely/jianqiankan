@@ -2,7 +2,7 @@
 name: hair-consultation
 description: 根据授权的顾客照片做脸廓观察、发型与发色试戴、个人形象报告和理发沟通卡；也用于操作剪前看看 Mac／Windows 工作台、回看历史、按反馈改款和按任务号回填试戴图。
 metadata:
-  version: "2.1.0"
+  version: "2.1.1"
 ---
 
 # 剪前看看 · 顾客发型设计

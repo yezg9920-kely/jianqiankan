@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import itertools
 import json
+import sys
 
 GEOMETRY = ('fringe', 'parting', 'sides', 'crown', 'perimeter')
 CONFIDENCE = {'high', 'medium', 'low', 'unknown'}
@@ -88,7 +89,7 @@ def validate_plan(profile, plan, observations):
 
 
 def compile_round(case_root, profile, plan, output):
-    case = json.loads((case_root/'case.json').read_text())
+    case = json.loads((case_root/'case.json').read_text(encoding='utf-8'))
     observations = validate_profile(profile, case, case_root)
     validation = validate_plan(profile, plan, observations)
     assets = {a['id']: a for a in case['assets']}
@@ -125,13 +126,13 @@ Conditions: {option['service_conditions']}
 Unknown details to check: {', '.join(option.get('unknowns_to_check',[])) or 'actual hair behavior and stylist feasibility'}
 Only modify scalp hair and necessary occlusion boundaries. Preserve actual face width, jaw/chin, eyes, eyebrows, nose, lips, skin tone and texture, age, facial hair, glasses, ears and neck. Do not reshape the face to satisfy the proposed balance. No extra beautification, skin whitening, makeup or different expression. Keep the baseline clothing, background, soft light, angle and head size. No invented hair density, lowered hairline or hidden-head measurements. The tentative face-shape description is not an instruction to change the face.
 Show the full hair silhouette. Preserve realistic individual strands and implement the selected silhouette clearly, following the customer's stated preference. Add only “{option['id']} {option['name']}” and “AI效果预览” at the lower margin. Output ONE portrait.'''
-        (output/'prompts'/f"{option['id']}.txt").write_text(prompt)
+        (output/'prompts'/f"{option['id']}.txt").write_text(prompt, encoding='utf-8')
         compiled.append({**option,'prompt_path':f"prompts/{option['id']}.txt",'reference_paths':[str(baseline_path),str(case_root/front['path'])],'reference_sha256':[baseline['sha256'],front['sha256']],'status':'planned_not_generated','prompt':prompt})
         report.append(f"| {option['id']} | {option['name']} | {option['personal_reason']} | {option['service_conditions']} |")
     report += ['', '## 本次仍不确定的部分', '', *['- '+s for s in profile['limitations']], '', '这些方向用于下一轮视觉验证；本人是否喜欢、人物是否还原、理发师能否实现，分别保留待确认。']
-    (output/'轮廓观察与个性化设计说明.md').write_text('\n'.join(report)+'\n')
-    (output/'compiled-plan.json').write_text(json.dumps({'profile':profile,'validation':validation,'options':compiled,'actual_new_image_generation_calls':0,'stage':'personalized_design_ready'},ensure_ascii=False,indent=2))
-    (output/'validation.json').write_text(json.dumps(validation,ensure_ascii=False,indent=2))
+    (output/'轮廓观察与个性化设计说明.md').write_text('\n'.join(report)+'\n', encoding='utf-8')
+    (output/'compiled-plan.json').write_text(json.dumps({'profile':profile,'validation':validation,'options':compiled,'actual_new_image_generation_calls':0,'stage':'personalized_design_ready'},ensure_ascii=False,indent=2), encoding='utf-8')
+    (output/'validation.json').write_text(json.dumps(validation,ensure_ascii=False,indent=2), encoding='utf-8')
     return validation
 
 
@@ -139,9 +140,11 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('case_root',type=Path);p.add_argument('profile',type=Path);p.add_argument('plan',type=Path);p.add_argument('output',type=Path)
     a=p.parse_args()
-    result=compile_round(a.case_root.resolve(),json.loads(a.profile.read_text()),json.loads(a.plan.read_text()),a.output.resolve())
+    result=compile_round(a.case_root.resolve(),json.loads(a.profile.read_text(encoding='utf-8')),json.loads(a.plan.read_text(encoding='utf-8')),a.output.resolve())
     print(json.dumps(result,ensure_ascii=False))
 
 
 if __name__=='__main__':
+    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
     main()

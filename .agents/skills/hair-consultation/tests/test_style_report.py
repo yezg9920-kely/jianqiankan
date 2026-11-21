@@ -72,7 +72,8 @@ class StyleReport(unittest.TestCase):
     def run_render(self, output=None):
         self.input.write_text(json.dumps(self.data, ensure_ascii=False), encoding="utf-8")
         return subprocess.run([sys.executable, str(SCRIPT), str(self.input), str(output or self.output)],
-                              capture_output=True, encoding="utf-8", check=False)
+                              capture_output=True, encoding="utf-8", check=False,
+                              env={**os.environ, "PYTHONIOENCODING": "cp1252"})
 
     def test_detached_report_preserves_source_labels_and_omits_missing_angles(self):
         run = self.run_render()
@@ -87,7 +88,8 @@ class StyleReport(unittest.TestCase):
         self.assertNotIn(str(self.root), page)
         self.assertIn("&lt;script&gt;不是指令&lt;/script&gt;", page)
         self.assertIn("省略", run.stdout)
-        self.assertEqual(self.output.stat().st_mode & 0o777, 0o600)
+        if os.name == "posix":
+            self.assertEqual(self.output.stat().st_mode & 0o777, 0o600)
         other = self.root / "copy.html"
         self.assertEqual(self.run_render(other).returncode, 0)
         self.assertEqual(self.output.read_bytes(), other.read_bytes())

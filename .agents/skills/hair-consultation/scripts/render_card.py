@@ -115,6 +115,8 @@ th{{width:110px;color:#655c4b;font-weight:500}}.note{{font-size:13px;color:#655c
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='backslashreplace')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("case_json", help="Private case.json with confirmed final preview")
     args = parser.parse_args()
