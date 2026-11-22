@@ -1,11 +1,11 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { activeWorkflow, defaults, fields } from '../model';
-import type { CaseSummary, Consultation, Field, Photo, Plan, Preferences, WorkflowKind, WorkflowMood, WorkflowRun } from '../model';
+import type { CaseSummary, ColorBaseOptions, Consultation, Field, Photo, Plan, Preferences, WorkflowKind, WorkflowMood, WorkflowRun } from '../model';
 
-type Tab = 'plans' | 'analysis' | 'history';
+type Tab = 'plans' | 'analysis' | 'colors' | 'history';
 type Modal = 'new' | 'more' | 'revise' | 'handoff' | 'single' | 'import' | 'front' | 'preview';
 type Task = { id:string; message:string; prompt:string; state:'waiting'|'attached' };
-type Preview = { title:string; image:Photo; label:string; previous?:Photo };
+type Preview = { title:string; image:Photo; label:string; previous?:Photo; previousLabel?:string };
 type Suite = {kind:WorkflowKind;mood:WorkflowMood;previewCount:number};
 type WorkflowResponse={consultation:Consultation;runId:string|null;planId?:string;message?:string};
 const defaultSuite:Suite={kind:'cut',mood:'natural',previewCount:2};
@@ -38,7 +38,7 @@ function readFile(file:File){
 export function useWorkspace() {
   const cases=ref<CaseSummary[]>([]);
   const current=ref<Consultation|null>(null);
-  const tab=ref<Tab>('plans'), roundId=ref(''), planId=ref('');
+  const tab=ref<Tab>('plans'), roundId=ref(''), colorRoundId=ref(''), planId=ref('');
   const busy=ref(''), toast=ref(''), error=ref('');
   const initialized=ref(false);
   const modal=ref<Modal|null>(null), dialog=ref<HTMLDialogElement>();
@@ -76,9 +76,11 @@ export function useWorkspace() {
     return all.filter(p=>ids.has(p.id));
   });
   const workflowBusy=computed(()=>current.value?.workflows?.some(w=>activeWorkflow(w.stage))??false);
+  const colorRounds=computed(()=>rounds.value.filter(r=>current.value?.plans.some(p=>p.round===r.id&&p.colorId)));
+  const displayRound=computed(()=>tab.value==='colors'?colorRoundId.value:roundId.value);
   const workflow=computed(()=>current.value?.workflows?.filter(w=>activeWorkflow(w.stage)).at(-1)
-    ??current.value?.workflows?.filter(w=>w.id===followed.value||w.round===roundId.value).at(-1)
-    ??(!roundId.value?current.value?.workflows?.at(-1):undefined));
+    ??current.value?.workflows?.filter(w=>w.id===followed.value||w.round===displayRound.value).at(-1)
+    ??(tab.value!=='colors'&&!displayRound.value?current.value?.workflows?.at(-1):undefined));
   const report=computed(()=>current.value?.reports.find(r=>r.round===roundId.value)??current.value?.reports[0]);
   const task=computed(()=>current.value?.tasks.filter(t=>t.planId===plan.value?.id).at(-1));
   const originals=computed(()=>{
@@ -98,7 +100,13 @@ export function useWorkspace() {
     const row={id,title,date,count,photo};
     if(index===-1)cases.value=[row,...cases.value];
     else cases.value=cases.value.map(x=>x.id===id?row:x);
-    if(reset||!data.rounds.some(r=>r.id===roundId.value))roundId.value=data.activeRound??'';
+    if(reset||!data.rounds.some(r=>r.id===roundId.value)){
+      const hairRounds=data.rounds.filter(r=>!colorRounds.value.some(color=>color.id===r.id));
+      roundId.value=hairRounds.find(r=>r.id===data.activeRound)?.id??hairRounds.at(-1)?.id??'';
+    }
+    if(reset||!colorRounds.value.some(r=>r.id===colorRoundId.value)){
+      colorRoundId.value=colorRounds.value.find(r=>r.id===data.activeRound)?.id??colorRounds.value.at(-1)?.id??'';
+    }
     const selected=data.plans.find(p=>p.id===focus);
     if(selected){ roundId.value=selected.round;planId.value=selected.id; }
     else if(reset||!plans.value.some(p=>p.id===planId.value)){
@@ -111,20 +119,30 @@ export function useWorkspace() {
     if(!id)return;
     // Keep the explicit case link and the active case in sync across refresh.
     const url=new URL(location.href);
-    if(url.searchParams.get('case')!==id){
-      url.searchParams.set('case',id);
-      history.replaceState(null,'',url);
+    url.searchParams.set('case',id);
+    if(tab.value==='colors'){
+      url.searchParams.set('view','colors');
+      if(colorRoundId.value) url.searchParams.set('colorRound',colorRoundId.value);
+      else url.searchParams.delete('colorRound');
+    }else{
+      url.searchParams.delete('view');
+      url.searchParams.delete('colorRound');
     }
+    if(url.href!==location.href) history.replaceState(null,'',url);
+
     try{
       localStorage.setItem('jqq.workbench.case',id);
-      localStorage.setItem('jqq.workbench.view.'+id,JSON.stringify({plan:planId.value,round:roundId.value}));
+      localStorage.setItem('jqq.workbench.view.'+id,JSON.stringify({plan:planId.value,round:roundId.value,colorRound:colorRoundId.value,tab:tab.value}));
     }catch{}
   }
   function restore(data:Consultation){
-    let saved: {plan?:string; round?:string} = {};
+    let saved: {plan?:string; round?:string; colorRound?:string; tab?:Tab} = {};
     try{saved=JSON.parse(localStorage.getItem('jqq.workbench.view.'+data.id)??'{}')??{};}catch{}
     setCase(data,true,saved.plan);
     if(!saved.plan&&saved.round&&data.rounds.some(round=>round.id===saved.round)) chooseRound(saved.round);
+    if(saved.colorRound&&colorRounds.value.some(r=>r.id===saved.colorRound)) colorRoundId.value=saved.colorRound;
+    if(saved.tab==='colors') tab.value='colors';
+    remember();
   }
   async function perform(label:string,action:()=>Promise<void>, destination:'modal'|'page'='page'){
     if(busy.value)return;
@@ -141,9 +159,17 @@ export function useWorkspace() {
       cases.value=await fetchApi<CaseSummary[]>('');
       let local='';
       try{local=localStorage.getItem('jqq.workbench.case')??'';}catch{}
-      const requested=new URLSearchParams(location.search).get('case');
+      const params=new URLSearchParams(location.search);
+      const requested=params.get('case');
       const id=cases.value.find(c=>c.id===requested)?.id??cases.value.find(c=>c.id===local)?.id??cases.value[0]?.id;
-      if(id)restore(await fetchApi<Consultation>('/'+id));
+      if(id){
+        restore(await fetchApi<Consultation>('/'+id));
+        if(params.get('view')==='colors'){
+          const colorRound=params.get('colorRound');
+          if(colorRound&&colorRounds.value.some(r=>r.id===colorRound)) chooseColorRound(colorRound);
+          else chooseTab('colors');
+        }
+      }
     });
     initialized.value=true;
   }
@@ -151,9 +177,26 @@ export function useWorkspace() {
     const data=await fetchApi<Consultation>('/'+id);
     followed.value='';tab.value='plans';restore(data);
   });
+  function chooseTab(next:Tab){
+    if(next!==tab.value) followed.value='';
+    if(next==='plans'&&tab.value==='colors'&&colorRounds.value.some(r=>r.id===roundId.value)){
+      roundId.value=rounds.value.filter(r=>!colorRounds.value.some(color=>color.id===r.id)).at(-1)?.id??'';
+      planId.value=plans.value.find(p=>p.recommended)?.id??plans.value[0]?.id??'';
+    }
+    tab.value=next;
+    remember();
+  }
+  function chooseColorRound(id:string){
+    followed.value='';
+    colorRoundId.value=id;
+    chooseTab('colors');
+  }
   const chooseRound=(id:string)=>{
+    if(colorRounds.value.some(round=>round.id===id)){
+      chooseColorRound(id);return;
+    }
     followed.value='';roundId.value=id;planId.value=plans.value.find(p=>p.recommended)?.id??plans.value[0]?.id??'';
-    tab.value='plans';remember();
+    chooseTab('plans');
   };
   function choosePlan(id:string,inspect=false){
     const found=current.value?.plans.find(p=>p.id===id);
@@ -185,22 +228,22 @@ export function useWorkspace() {
     suite.value=mode==='new'?{...defaultSuite}:{...defaultSuite,mood:workflow.value?.mood??'natural',kind:workflow.value?.kind??'cut'};
     caseTitle.value='';ancillary.value={left:null,right:null,back:null};
     draftPrefs.value={...(mode==='new'?defaults:current.value?.preferences??defaults)};
-    changeField.value='fringe';changeValue.value='';promptTask.value=null;
+    changeField.value=mode==='revise'&&plan.value?.colorId?'color':'fringe';changeValue.value='';promptTask.value=null;
     modal.value=mode;
     await nextTick();
     dialog.value?.showModal();
   }
-  async function view(image:Photo,title:string,label='AI效果预览',previous?:Photo){
-    preview.value={title,image,label,previous};await show('preview');
+  async function view(image:Photo,title:string,label='AI效果预览',previous?:Photo,previousLabel?:string){
+    preview.value={title,image,label,previous,previousLabel};await show('preview');
     if(previous)compare.value=true;
   }
-  function begin(reply:WorkflowResponse, reset:boolean){
+  function begin(reply:WorkflowResponse, reset:boolean, colorRound=false){
     followed.value=reply.runId??'';
     const run=reply.consultation.workflows.find(w=>w.id===reply.runId);
     setCase(reply.consultation,reset,reply.planId??run?.slots.find(s=>s.role==='look')?.planId);
-    tab.value='plans';close();
+    tab.value=colorRound?'colors':'plans';remember();close();
     if(reply.message) error.value=reply.message;
-    else announce('已开始这轮发型工作流。');
+    else announce(colorRound?'已开始制作发色试戴。':'已开始这轮发型工作流。');
   }
   const generateInputs=()=>({ ...suite.value, preferences:draftPrefs.value,cloudAuthorized:cloudAuthorized.value});
   const create=(withImages=false)=>perform('正在保存照片',async()=>{
@@ -226,6 +269,21 @@ export function useWorkspace() {
       ...generateInputs(),anchorPlanId:plan.value?.image?plan.value.id:undefined,
     }),false);
   },'modal');
+  const saveColors=(colorIds:string[],options:ColorBaseOptions={})=>perform('正在保存发色对照',async()=>{
+    const data=await fetchApi<Consultation>(path()+'/colors',{colorIds,...options});
+    setCase(data);
+    if(data.activeRound) chooseColorRound(data.activeRound);
+    announce('发色对照已保存。');
+  });
+  const generateColors=(planIds:string[])=>perform('正在建立发色试戴任务',async()=>{
+    const reply=await fetchApi<WorkflowResponse>(path()+'/generate',{planIds,cloudAuthorized:true,kind:'color'});
+    begin(reply,false,true);
+  });
+  async function reviseColor(id:string){
+    choosePlan(id);
+    chooseTab('colors');
+    await show('revise');
+  }
   const generateSingle=()=>perform('正在建立试戴任务',async()=>{
     if(!cloudAuthorized.value||!plan.value)return;
     begin(await fetchApi<WorkflowResponse>(path()+'/generate',{...generateInputs(),planId:plan.value.id}),false);
@@ -250,7 +308,7 @@ export function useWorkspace() {
       } else setCase(checked);
       if(active&&previous&&activeWorkflow(previous.stage)&&!activeWorkflow(active.stage)){
         if(active.stage==='ready')announce('试戴图已回到案例，可以打开本轮报告。');
-        if(active.stage==='retake') tab.value='analysis';
+        if(active.stage==='retake'&&tab.value!=='colors') tab.value='analysis';
       }
     }catch{/* A missing poll can be refreshed without losing the case. */}
     finally{checkingStatus=false;}
@@ -270,13 +328,14 @@ export function useWorkspace() {
   },'modal');
   const revise=(generate=false)=>perform('正在建立新版本',async()=>{
     if(generate&&!cloudAuthorized.value)return;
+    const inColors=tab.value==='colors';
     const data=await fetchApi<WorkflowResponse>(planPath()+'/revise',{field:changeField.value,value:changeValue.value,generate,
-      cloudAuthorized:cloudAuthorized.value,mood:workflow.value?.mood});
-    if(generate)begin(data,false);
+      cloudAuthorized:cloudAuthorized.value,mood:workflow.value?.mood,kind:inColors?'color':undefined});
+    if(generate)begin(data,false,inColors);
     else {setCase(data.consultation,false,data.planId);close();announce('已另存一个版本，可以随时回看上版。');}
   },'modal');
-  const select=()=>perform('正在保存备选',async()=>{
-    setCase(await fetchApi<Consultation>(planPath()+'/select',{}));announce('已记为备选方案。');
+  const select=(id:string)=>perform('正在保存备选',async()=>{
+    setCase(await fetchApi<Consultation>(path()+'/plans/'+id+'/select',{}));announce('已记为备选方案。');
   });
   const makeTask=()=>perform('正在准备任务单',async()=>{
     promptTask.value=await fetchApi<Task>(planPath()+'/prompt',{authorized:authorized.value});
@@ -296,8 +355,8 @@ export function useWorkspace() {
   }
   onMounted(()=>{void start();statusTimer=setInterval(()=>void poll(),1750);});
   onUnmounted(()=>{clearInterval(statusTimer);clearTimeout(toastTimeout);if(filePreview.value)URL.revokeObjectURL(filePreview.value);});
-  return {cases,current,tab,roundId,planId,busy,toast,error,initialized,modal,dialog,dialogError,caseTitle,frontFile,
+  return {cases,current,tab,roundId,colorRoundId,colorRounds,planId,busy,toast,error,initialized,modal,dialog,dialogError,caseTitle,frontFile,
     ancillary,filePreview,authorized,cloudAuthorized,suite,draftPrefs,changeField,changeValue,promptTask,preview,compare,rounds,plans,compactPlans,picturePlans,plan,parent,
-    versions,report,task,workflow,workflowBusy,originals,chooseCase,chooseRound,choosePlan,refresh,setFile,setSide,clearModal,close,show,view,create,
-    analyze,updateFront,recommend,generateMore,generateSingle,stop,revise,select,makeTask,attach,copy,start};
+    versions,report,task,workflow,workflowBusy,originals,chooseCase,chooseRound,choosePlan,chooseTab,chooseColorRound,refresh,setFile,setSide,clearModal,close,show,view,create,
+    analyze,updateFront,recommend,generateMore,generateSingle,saveColors,generateColors,stop,revise,reviseColor,select,makeTask,attach,copy,start};
 }

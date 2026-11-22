@@ -1,23 +1,47 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import ColorAnalysis from './ColorAnalysis.vue';
 import Icon from './Icon.vue';
 import WorkflowControls from './WorkflowControls.vue';
 import { dates, sourceLabels, useWorkspace, viewName } from './useWorkspace';
 import { activeWorkflow,fields,workflowKinds,workflowMoods } from '../model';
-import type { Field } from '../model';
+import type { Field, Plan, WorkflowSlot } from '../model';
 const {
-  cases,current,tab,roundId,busy,toast,error,initialized,modal,dialog,dialogError,caseTitle,frontFile,
+  cases,current,tab,roundId,colorRoundId,colorRounds,busy,toast,error,initialized,modal,dialog,dialogError,caseTitle,frontFile,
   filePreview,authorized,cloudAuthorized,suite,draftPrefs,changeField,changeValue,promptTask,preview,compare,rounds,plans,compactPlans,picturePlans,plan,parent,
-  versions,report,task,workflow,workflowBusy,originals,chooseCase,chooseRound,choosePlan,refresh,setFile,setSide,clearModal,close,show,view,create,
-  analyze,updateFront,recommend,generateMore,generateSingle,stop,revise,select,makeTask,attach,copy,start,
+  versions,report,task,workflow,workflowBusy,originals,chooseCase,chooseRound,choosePlan,chooseTab,chooseColorRound,refresh,setFile,setSide,clearModal,close,show,view,create,
+  analyze,updateFront,recommend,generateMore,generateSingle,saveColors,generateColors,stop,revise,reviseColor,select,makeTask,attach,copy,start,
 }=useWorkspace();
 const tabs=[
   {id:'plans',name:'造型方案',icon:'gallery'},
   {id:'analysis',name:'照片分析',icon:'analysis'},
+  {id:'colors',name:'发色分析',icon:'palette'},
   {id:'history',name:'历史记录',icon:'clock'},
 ] as const;
 const fileTypes='.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp';
 const modalTitle={new:'新建发型案例',more:'再推荐一组',revise:'修改这款造型',handoff:'交给 Codex 制作',single:'生成这款试戴',import:'导入试戴图',front:'补拍一张正面照',preview:'查看原尺寸'};
 const runLabels={queued:'已排队',checking:'分析照片',planning:'设计方案',making:'制作试戴',ready:'已生成',partial:'部分完成',failed:'本轮未出图',retake:'需要补照',stopped:'已停止',interrupted:'制作已断开'} as const;
+const visibleSlots=computed(()=>workflow.value?.slots.map(slot=>{
+  if(workflow.value?.kind!=='color'||slot.role!=='look'||!slot.picture) return slot;
+  const revised=current.value?.plans.find(p=>p.id===slot.planId)?.image;
+  return revised?{...slot,picture:revised}:slot;
+})??[]);
+const previewReference=computed(()=>preview.value?.previous??(preview.value?.previousLabel?undefined:current.value?.photo));
+function showSlot(slot:WorkflowSlot){
+  if(!slot.picture)return;
+  if(workflow.value?.kind==='color'){
+    if(slot.role==='baseline')return view(slot.picture,slot.name,'统一浅底');
+    const color=current.value?.plans.find(p=>p.id===slot.planId);
+    return view(slot.picture,slot.name,'AI 发色预览',color?.colorBase?.cleanPhoto,'统一浅底');
+  }
+  return view(slot.picture,slot.name,slot.role==='baseline'?'AI 整理基准照':'AI 效果预览');
+}
+function showPlanPhoto(plan:Plan){
+  if(!plan.image)return;
+  const label=plan.imageSource==='imported'?'导入效果图 · 待核对':'AI 效果预览';
+  if(plan.colorId)return view(plan.image,plan.name,label,plan.colorBase?.cleanPhoto,'统一浅底');
+  return view(plan.image,plan.name,label);
+}
 const slotLabels={queued:'待制作',making:'制作中',attached:'已完成',failed:'未完成',stopped:'已停止'} as const;
 const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection:'pin',image:'photo'};
 </script>
@@ -60,17 +84,17 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
           <h1>{{ current.title }}</h1>
           <p>{{ dates(current.date) }} 建立<span> / </span>{{ current.originals.length }} 张原照<span> / </span>{{ current.rounds.length }} 组方案</p>
         </div>
-        <div class="case-header-actions">
+        <div v-if="tab!=='colors'" class="case-header-actions">
           <a v-if="report" :href="report.url" class="btn btn-outline" target="_blank" rel="noopener"><Icon name="report" :size="17" />打开历史报告<Icon name="external" :size="14" /></a>
           <button class="btn btn-primary" type="button" @click="show('more')" :disabled="!!busy||workflowBusy"><Icon name="spark" :size="18" />再生成一组</button>
         </div>
       </header>
       <nav class="tabs" aria-label="案例视图">
         <button v-for="item in tabs" :key="item.id" type="button" class="tab"
-          :aria-pressed="tab===item.id" @click="tab=item.id"><Icon :name="item.icon" :size="17" />{{ item.name }}</button>
+          :aria-pressed="tab===item.id" @click="chooseTab(item.id)"><Icon :name="item.icon" :size="17" />{{ item.name }}</button>
       </nav>
 
-      <section v-if="workflow" class="generation-panel" :class="'run-'+workflow.stage" aria-label="本轮生成进度">
+      <section v-if="workflow&&(tab!=='colors'||workflow.kind==='color')" class="generation-panel" :class="'run-'+workflow.stage" aria-label="本轮生成进度">
         <div class="generation-top">
           <div class="generation-title">
             <span class="generation-icon"><Icon :name="activeWorkflow(workflow.stage)?'spark':'report'" :size="19"/></span>
@@ -89,9 +113,9 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
           <li>04 查看报告</li>
         </ol>
         <p v-if="workflow.message" class="run-message">{{ workflow.message }}</p>
-        <ul v-if="workflow.slots.length" class="workflow-slots">
-          <li v-for="slot in workflow.slots" :key="slot.id" :class="'slot-'+slot.status" :title="slot.message">
-            <button v-if="slot.picture" type="button" class="slot-picture" :aria-label="'放大'+slot.name" @click="view(slot.picture,slot.name,slot.role==='baseline'?'AI 整理基准照':'AI 效果预览')"><img :src="slot.picture.thumb" alt=""></button>
+        <ul v-if="visibleSlots.length" class="workflow-slots">
+          <li v-for="slot in visibleSlots" :key="slot.id" :class="'slot-'+slot.status" :title="slot.message">
+            <button v-if="slot.picture" type="button" class="slot-picture" :aria-label="'放大'+slot.name" @click="showSlot(slot)"><img :src="slot.picture.thumb" alt=""></button>
             <span v-else class="slot-icon"><Icon :name="slot.role==='baseline'?'photo':'outline'" :size="16"/></span>
             <span><strong>{{ slot.name }}</strong><small>{{ slotLabels[slot.status] }}<span v-if="slot.message"> · {{ slot.message }}</span></small></span>
           </li>
@@ -144,7 +168,7 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
           <p class="inspector-meta">{{ sourceLabels[plan.source] }}<span v-if="plan.revision"> / 第 {{ plan.revision }} 版</span><span v-if="plan.at"> / {{ dates(plan.at) }}</span></p>
           <div v-if="plan.image" class="zoom-row">
             <img :src="plan.image.thumb" alt="" />
-            <button class="btn btn-outline btn-small" type="button" @click="view(plan.image,plan.name,plan.imageSource==='imported'?'导入效果图 · 待核对':'AI 效果预览')">
+            <button class="btn btn-outline btn-small" type="button" @click="showPlanPhoto(plan)">
               <Icon name="expand" :size="15" />看大图
             </button>
             <button v-if="parent?.image" class="btn btn-quiet btn-small" type="button" @click="view(plan.image,plan.name+' · 新旧对比','本版 AI 效果预览',parent.image)">对比上版</button>
@@ -157,7 +181,7 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
           </div>
           <div class="inspector-actions">
             <button class="btn btn-primary" type="button" @click="show('revise')" :disabled="!!busy||workflowBusy"><Icon name="edit" :size="17" />改这款</button>
-            <button class="btn btn-outline" type="button" @click="select" :disabled="!!busy||current.selected===plan.id"><Icon name="pin" :size="16" />{{ current.selected===plan.id?'已设备选':'设为备选' }}</button>
+            <button class="btn btn-outline" type="button" @click="select(plan.id)" :disabled="!!busy||current.selected===plan.id"><Icon name="pin" :size="16" />{{ current.selected===plan.id?'已设备选':'设为备选' }}</button>
           </div>
           <div v-if="versions.length>1" class="version-list">
             <p class="eyebrow">版本回看</p>
@@ -214,6 +238,10 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
         </section>
       </div>
 
+      <ColorAnalysis v-else-if="tab==='colors'" :consultation="current" :rounds="colorRounds" :round-id="colorRoundId"
+        :busy="!!busy" :workflow-busy="workflowBusy" @change-round="chooseColorRound"
+        @save="saveColors" @generate="generateColors" @view="view" @select="select" @revise="reviseColor" @inspect="choosePlan($event,true)" />
+
       <div v-else class="history-grid">
         <section class="boxed">
           <header class="section-head"><div><p class="eyebrow">已保存</p><h2>报告与历史轮次</h2></div></header>
@@ -253,9 +281,9 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
     <div v-if="toast" class="toast" role="status"><Icon name="check" :size="18"/>{{ toast }}</div>
   </main>
 
-  <dialog v-if="modal" ref="dialog" :data-mode="modal" :aria-label="modalTitle[modal]"
+  <dialog v-if="modal" ref="dialog" :data-mode="modal" :aria-label="modal==='revise'&&plan?.colorId?'调整这款发色':modalTitle[modal]"
     @close="clearModal" @cancel.prevent="!busy&&close()">
-    <div class="dialog-header"><div><span class="eyebrow">剪前看看</span><h2>{{ modal==='preview'?preview?.title:modalTitle[modal] }}</h2></div>
+    <div class="dialog-header"><div><span class="eyebrow">剪前看看</span><h2>{{ modal==='preview'?preview?.title:modal==='revise'&&plan?.colorId?'调整这款发色':modalTitle[modal] }}</h2></div>
       <button class="icon-button" type="button" aria-label="关闭" @click="close" :disabled="!!busy"><Icon name="close" :size="21"/></button>
     </div>
     <div v-if="dialogError" class="notice error" role="alert">{{ dialogError }}</div>
@@ -300,9 +328,10 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
 
     <form v-else-if="modal==='revise'" class="form" @submit.prevent="revise(true)">
       <p class="muted">以「{{ plan?.name }}」为基础。每次改一处，另存一版。</p>
-      <label class="input-label">要改哪里<select v-model="changeField"><option v-for="(label,key) in fields" :key="key" :value="key">{{ label }}</option></select></label>
+      <p v-if="plan?.colorId" class="muted">这版沿用本组底图，只调整发色。</p>
+      <label v-else class="input-label">要改哪里<select v-model="changeField"><option v-for="(label,key) in fields" :key="key" :value="key">{{ label }}</option></select></label>
       <div v-if="plan?.spec[changeField]" class="change-note"><p><span>当前</span>{{ plan.spec[changeField] }}</p></div>
-      <label class="input-label">想要的效果<textarea v-model="changeValue" rows="3" maxlength="460" required placeholder="例如：让眉眼更清楚，刘海留薄一点"></textarea></label>
+      <label class="input-label">想要的效果<textarea v-model="changeValue" rows="3" maxlength="460" required :placeholder="plan?.colorId?'例如：保留灰调，整体再深一点':'例如：让眉眼更清楚，刘海留薄一点'"></textarea></label>
       <label class="check cloud-choice"><input type="checkbox" v-model="cloudAuthorized" /><span>同意用这位顾客的原照和本款参考图做新版试戴。</span></label>
       <footer class="dialog-actions"><button type="button" class="btn btn-quiet" @click="revise(false)" :disabled="!!busy||!changeValue.trim()">保存为新版本</button><button type="submit" class="btn btn-primary" :disabled="!!busy||!changeValue.trim()||!cloudAuthorized||workflowBusy"><Icon name="spark" :size="17"/>{{ busy||'生成新版' }}</button></footer>
     </form>
@@ -329,9 +358,9 @@ const activityIcons={analysis:'analysis',round:'spark',revision:'edit',selection
     </div>
 
     <div v-else-if="modal==='preview'&&preview" class="preview-sheet">
-      <label v-if="preview.label!=='顾客原照'&&current?.photo" class="check"><input type="checkbox" v-model="compare" />{{ preview.previous?'并排看上一版':'并排看原照' }}</label>
-      <div class="preview-images" :class="{compare:compare&&current?.photo}">
-        <figure v-if="compare&&current?.photo"><img :src="(preview.previous||current.photo).url" :alt="preview.previous?'上一版试戴':'本人原照'" /><figcaption>{{ preview.previous?'上一版 AI 效果预览':'顾客原照' }}</figcaption></figure>
+      <label v-if="preview.label!=='顾客原照'&&preview.label!=='发型底图'&&preview.label!=='统一浅底'&&previewReference" class="check"><input type="checkbox" v-model="compare" />{{ preview.previousLabel?'并排看本轮底图':preview.previous?'并排看上一版':'并排看原照' }}</label>
+      <div class="preview-images" :class="{compare:compare&&previewReference}">
+        <figure v-if="compare&&previewReference"><img :src="previewReference.url" :alt="preview.previousLabel||(preview.previous?'上一版试戴':'本人原照')" /><figcaption>{{ preview.previousLabel||(preview.previous?'上一版 AI 效果预览':'顾客原照') }}</figcaption></figure>
         <figure><img :src="preview.image.url" :alt="preview.title" /><figcaption>{{ preview.label }}</figcaption></figure>
       </div>
     </div>

@@ -6,9 +6,9 @@
 
 | 下载 | 适合怎么用 |
 | --- | --- |
-| [整套 ZIP](downloads/JianQianKan-Skill-and-Workbench-v2.1.1.zip?raw=true) | 同时安装 Codex Skill 和使用电脑工作台 |
-| [仅 Skill](downloads/hair-consultation-Skill-v2.1.1.zip?raw=true) | 在 Codex 对话里完成发型分析、试戴图册和详细报告 |
-| [仅工作台](downloads/JianQianKan-Workbench-macOS-Windows-v1.1.1.zip?raw=true) | 在浏览器上传、生成和管理案例 |
+| [整套 ZIP](downloads/JianQianKan-Skill-and-Workbench-v2.2.0.zip?raw=true) | 同时安装 Codex Skill 和使用电脑工作台 |
+| [仅 Skill](downloads/hair-consultation-Skill-v2.2.0.zip?raw=true) | 在 Codex 对话里完成发型分析、试戴图册和详细报告 |
+| [仅工作台](downloads/JianQianKan-Workbench-macOS-Windows-v1.2.0.zip?raw=true) | 在浏览器上传、生成和管理案例 |
 
 [下载文件的 SHA-256](downloads/SHA256SUMS.txt)
 
@@ -20,7 +20,9 @@
 
 一键试戴需要安装官方 [Codex CLI](https://developers.openai.com/codex/cli)，用自己的 ChatGPT 账号登录，并在当前环境中具备内置图像能力。可以用 `codex login status` 核对登录。工作台也可导入通过 Codex 对话制作的效果图。
 
-工作台支持发型设计、发型加发色、同剪法比发色和同剪法比卷度。新案例先做一张保持原发型的干净基准照，再做 1–2 款。有基准以后，每轮最多做 3 款。选中某款可继续微调或换组，旧版会保留在历史里。报告可以在浏览器打印或保存 PDF。[启动与旧案迁移](JianQianKan-Workbench/启动与迁移.md) · [工作台操作说明](JianQianKan-Workbench/workbench/README.md)
+工作台支持发型设计、发型加发色、同剪法比发色和同剪法比卷度。新案例先做一张保持原发型的干净基准照，再做 1–2 款。有基准以后，每批最多做 3 款。选中某款可继续微调或换组，旧版会保留在历史里。报告可以在浏览器打印或保存 PDF。[启动与旧案迁移](JianQianKan-Workbench/启动与迁移.md) · [工作台操作说明](JianQianKan-Workbench/workbench/README.md)
+
+打开案例里的「发色分析」，默认先微整理凌乱发束，也可以选择已出图的造型。12 款配色可以一次选齐，再分批生成。整组固定发型、光线与浅米灰背景，试戴图可逐张放大，报告会汇总同轮结果。
 
 ## 使用 Codex Skill
 

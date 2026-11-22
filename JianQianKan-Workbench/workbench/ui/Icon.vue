@@ -4,6 +4,7 @@ const shapes: Record<string,string> = {
   plus:'<path d="M12 5v14M5 12h14"/>',
   gallery:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 4v16M4 12h16"/>',
   analysis:'<path d="M9 4H6a2 2 0 0 0-2 2v3m11-5h3a2 2 0 0 1 2 2v3M9 20H6a2 2 0 0 1-2-2v-3m11 5h3a2 2 0 0 0 2-2v-3"/><path d="M9 10h.01m6 0h.01M9 14a4 4 0 0 0 6 0"/>',
+  palette:'<path d="M12 3a9 9 0 1 0 0 18h1.3a2 2 0 0 0 1.5-3.3 1.1 1.1 0 0 1 .8-1.8H17a4 4 0 0 0 4-4A9 9 0 0 0 12 3Z"/><path d="M7.5 11h.01m3-3.5h.01m4.5.5h.01m3 3.5h.01"/>',
   clock:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/>',
   spark:'<path d="m12 2 1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2Zm6 14 1 2.9 3 1.1-3 1-1 3-1-3-3-1 3-1.1 1-2.9Z"/>',
   chevron:'<path d="m9 6 6 6-6 6"/>',

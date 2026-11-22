@@ -61,11 +61,19 @@ export interface Plan {
   image?: Photo;
   imageSource?: 'generated' | 'imported';
   cutId?: string;
+  colorId?: string;
+  colorBase?: { photoId: string; planId?: string; photo?: Photo; cleanPhoto?: Photo; tidy?: boolean };
   at?: string;
   parentId?: string;
   revision?: number;
   recommended?: boolean;
   change?: { field: Field; before: string; after: string };
+}
+
+export interface ColorBaseOptions {
+  anchorPlanId?: string;
+  anchorClean?: boolean;
+  preserveOriginal?: boolean;
 }
 
 export interface Round {

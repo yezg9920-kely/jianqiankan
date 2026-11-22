@@ -5,7 +5,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import sharp from 'sharp';
-import { analyzeCase, assetFor, attachImage, createCase, getCase, listCases, Problem, promptFor, recommend, reportFor, revise, select, updateFront } from './store';
+import { analyzeCase, assetFor, attachImage, createCase, getCase, listCases, Problem, promptFor, recommend, reportFor, revise, saveColors, select, updateFront } from './store';
 import { generateNewCase,generateExisting,generateRevision,stopWorkflow } from './workflow';
 import { workflowReport } from './workflow-report';
 
@@ -118,6 +118,7 @@ const listener=createServer(async(req,res)=>{
     if(stop){ response(res,200,await stopWorkflow(caseId,stop[1])); return;}
     if(route==='generate'){response(res,202,await generateExisting(caseId,payload));return;}
     if(route==='analyze') response(res,200,await analyzeCase(caseId));
+    else if(route==='colors') response(res,200,await saveColors(caseId,payload));
     else if(route==='recommend') response(res,200,await recommend(caseId,payload));
     else if(route==='front') response(res,200,await updateFront(caseId,payload));
     else {

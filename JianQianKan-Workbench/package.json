@@ -1,6 +1,6 @@
 {
   "name": "jianqiankan-workbench",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "private": true,
   "engines": {
     "node": ">=22"
@@ -12,6 +12,7 @@
     "type-check": "vue-tsc -p workbench/tsconfig.json",
     "test:release": "node tools/verify-hair-workbench.mjs --directory . --no-browser",
     "test:analysis": "node --import tsx --test workbench/test-portable-analysis.mjs",
+    "test:colors": "node --import tsx workbench/test-color-planning.mjs",
     "test:codex": "node --import tsx --test workbench/test-codex-platform.mjs"
   },
   "dependencies": {

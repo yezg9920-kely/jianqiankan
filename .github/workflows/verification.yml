@@ -35,9 +35,10 @@ jobs:
           npm run type-check
           npm run test:analysis
           npm run test:codex
+          npm run test:colors
           npm run test:release
       - name: Verify the downloadable ZIP
         if: ${{ !cancelled() && steps.workbench.outcome == 'success' }}
         timeout-minutes: 5
         working-directory: JianQianKan-Workbench
-        run: node tools/verify-hair-workbench.mjs ../downloads/JianQianKan-Workbench-macOS-Windows-v1.1.1.zip --no-browser
+        run: node tools/verify-hair-workbench.mjs ../downloads/JianQianKan-Workbench-macOS-Windows-v1.2.0.zip --no-browser
